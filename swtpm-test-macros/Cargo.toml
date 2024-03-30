@@ -1,0 +1,17 @@
+[package]
+name = "swtpm-test-macros"
+version = "0.1.0"
+edition = "2021"
+authors = ["Arthur Gautier <baloo@superbaloo.net>"]
+description = """
+Set of macros to start and stop swtpm for tests
+"""
+license = "Apache-2.0"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.7"
+quote = "1"
+syn = { version = "1.0.56", features = ["full"] }
