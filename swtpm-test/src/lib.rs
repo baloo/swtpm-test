@@ -1,6 +1,6 @@
 use std::{
     fs::create_dir,
-    io::Write,
+    io::{Read, Write},
     os::unix::net::UnixStream,
     path::{Path, PathBuf},
     process::{Child, Command, Stdio},
@@ -47,9 +47,9 @@ where
             "--pid",
             &format!("file={}", swtpm_pid.display()),
         ])
-        .stdin(Stdio::piped())
-        .stdout(Stdio::inherit())
-        .stderr(Stdio::inherit())
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .spawn()
         .expect("failed to execute child");
 
@@ -97,5 +97,19 @@ impl Drop for SubprocessKiller {
         }
 
         let _ = self.child.kill();
+
+        macro_rules! dump_outputs {
+            ($name:expr, $attr:tt) => {
+                if let Some(mut output) = self.child.$attr.take() {
+                    let mut buf = String::new();
+                    if output.read_to_string(&mut buf).is_ok() {
+                        println!("swtpm {}:\n{}", $name, buf);
+                    }
+                }
+            };
+        }
+
+        dump_outputs!("stdout", stdout);
+        dump_outputs!("stderr", stderr);
     }
 }
