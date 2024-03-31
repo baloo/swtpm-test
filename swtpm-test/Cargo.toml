@@ -15,3 +15,6 @@ tempfile = "3.10.1"
 tss-esapi = { git = "https://github.com/parallaxsecond/rust-tss-esapi.git", features = ["generate-bindings"] }
 
 swtpm-test-macros = { path = "../swtpm-test-macros" }
+
+[dev-dependencies]
+tokio = { version = "1.37.0", features = ["macros", "rt", "rt-multi-thread"] }
